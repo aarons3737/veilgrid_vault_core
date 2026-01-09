@@ -15,3 +15,6 @@ If you use this in a product, I’d love to hear about it:
 
 > Note: This is client-side web code. Do not treat it as a secrecy boundary.
 > Security and access control must be enforced by your app’s own auth/permissions model (or use Veilgrid ;) )
+
+### Want the full platform experience?
+Veilgrid focuses on privacy-first agent workflows, secure onboarding, and production-grade orchestration around tools like this.
