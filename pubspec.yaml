@@ -1,7 +1,7 @@
 name: veilgrid_vault_core
-description: "A new Flutter package project."
-version: 0.0.1
-homepage:
+description: "Web-only local vault core (FSA + OPFS fallback) for Veilgrid/ShechetAI."
+version: 0.1.0
+homepage: https://github.com/aarons3737/veilgrid_vault_core
 
 environment:
   sdk: ^3.9.2
