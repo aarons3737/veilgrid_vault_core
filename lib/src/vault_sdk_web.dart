@@ -36,6 +36,46 @@ class VaultSDK {
   static bool _installed = false;
   static Completer<void>? _readyC;
 
+  static bool _hasExpectedApi(dynamic win) {
+    if (win == null) return false;
+
+    dynamic sdk;
+    try {
+      sdk = jsu.getProperty(win, 'VaultSDK');
+    } catch (_) {
+      return false;
+    }
+    if (sdk == null) return false;
+
+    const requiredMethods = <String>[
+      'setDefaultRoot',
+      'setUserContext',
+      'setLibraryNamespace',
+      'requestPersistence',
+      'status',
+      'grantAccess',
+      'list',
+      'open',
+      'save',
+      'delete',
+      'moveFileToFolder',
+      'exportFileDownload',
+      'backupCreateDownload',
+      'restoreFromBackupB64',
+    ];
+
+    for (final method in requiredMethods) {
+      dynamic member;
+      try {
+        member = jsu.getProperty(sdk, method);
+      } catch (_) {
+        return false;
+      }
+      if (member == null) return false;
+    }
+    return true;
+  }
+
   /// Injects JS bundle into the page and waits until `window.VaultSDK` exists.
   /// Idempotent.
   static Future<void> install() async {
@@ -51,13 +91,13 @@ class VaultSDK {
     _readyC = Completer<void>();
 
     final script = html.ScriptElement()
-      ..type = 'module'
+      ..type = 'text/javascript'
       ..text = _jsSource;
     (html.document.head ?? html.document.body)?.append(script);
 
     for (int i = 0; i < 200; i++) {
       final win = js.context['window'];
-      final has = win != null && jsu.getProperty(win, 'VaultSDK') != null;
+      final has = _hasExpectedApi(win);
       if (has) {
         _readyC?.complete();
         return;
@@ -66,7 +106,9 @@ class VaultSDK {
     }
 
     if (!(_readyC?.isCompleted ?? true)) {
-      _readyC?.completeError(StateError('VaultSDK JS did not initialize.'));
+      _readyC?.completeError(
+        StateError('VaultSDK JS did not initialize with the expected API.'),
+      );
     }
   }
 
