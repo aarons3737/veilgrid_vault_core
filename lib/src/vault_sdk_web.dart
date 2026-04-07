@@ -424,6 +424,8 @@ const String _jsSource = r"""
 //
 // Capability tokens allow temporary access to an arbitrary prefix path.
 
+window.__VEILGRID_VAULT_CORE_BUILD__ = 'v0.1.6';
+
 const VAULT_DB = 'vault-db';
 const HANDLE_STORE = 'handles';
 
@@ -652,6 +654,7 @@ function downloadBlob(bytes, filename, mime){
 }
 
 window.VaultSDK = {
+  __build: 'v0.1.6',
   async setDefaultRoot(){
     if(!window.showDirectoryPicker) throw new Error('fsa_unsupported');
     const h = await window.showDirectoryPicker({ mode:'readwrite' });

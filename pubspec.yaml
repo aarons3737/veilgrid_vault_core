@@ -1,6 +1,6 @@
 name: veilgrid_vault_core
 description: "Web-only local vault core (FSA + OPFS fallback) for Veilgrid/ShechetAI."
-version: 0.1.5
+version: 0.1.6
 homepage: https://github.com/aarons3737/veilgrid_vault_core
 
 environment:
