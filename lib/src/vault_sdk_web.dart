@@ -312,12 +312,26 @@ class VaultSDK {
   }
 
   static Map<String, dynamic> _toMap(dynamic jsObj) {
+    final dartObj = jsu.dartify(jsObj);
+    if (dartObj is Map) {
+      return dartObj.map((k, v) => MapEntry(k.toString(), v));
+    }
+
     final jsonStr =
         js.context['JSON'].callMethod('stringify', [jsObj]) as String;
     return jsonDecode(jsonStr) as Map<String, dynamic>;
   }
 
   static List<Map<String, dynamic>> _toListOfMap(dynamic jsArr) {
+    final dartObj = jsu.dartify(jsArr);
+    if (dartObj is List) {
+      return dartObj
+          .map((item) => Map<String, dynamic>.from(
+                (item as Map).map((k, v) => MapEntry(k.toString(), v)),
+              ))
+          .toList();
+    }
+
     final jsonStr =
         js.context['JSON'].callMethod('stringify', [jsArr]) as String;
     final data = jsonDecode(jsonStr) as List;
