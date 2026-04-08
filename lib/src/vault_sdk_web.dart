@@ -286,9 +286,15 @@ class VaultSDK {
   // ---------- internals ----------
   static Future<dynamic> _call(String path, [List<dynamic>? args]) async {
     final parts = path.split('.');
-    dynamic target = js.context;
-    for (final p in parts) {
-      if (p == 'window') continue;
+    final startsAtWindow = parts.isNotEmpty && parts.first == 'window';
+
+    dynamic target = startsAtWindow ? js.context['window'] : js.context;
+    dynamic owner = target;
+
+    final segments = startsAtWindow ? parts.skip(1) : parts;
+
+    for (final p in segments) {
+      owner = target;
       target = jsu.getProperty(target, p);
       if (target == null) {
         throw StateError('Missing JS path: $path');
@@ -297,8 +303,7 @@ class VaultSDK {
     final hasCall = jsu.getProperty(target, 'call') != null;
     if (!hasCall) throw StateError('JS target is not a function: $path');
 
-    final res =
-        jsu.callMethod(target, 'call', [js.context['window'], ...(args ?? [])]);
+    final res = jsu.callMethod(target, 'call', [owner, ...(args ?? [])]);
     return await jsu.promiseToFuture(res);
   }
 
